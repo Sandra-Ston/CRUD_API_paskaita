@@ -9,7 +9,9 @@ app.use(express.json());
 //req - request
 //res - response
 
-//PRODUCTS-----------------------------------------------------------------------------
+//PRODUCTS ROUTES-----------------------------------------------------------------------------
+
+//GET /products - grazina visus produktus
 app.get('/products', async (req, res) => {
     try{
         const results = await pool.query("select * from products");
@@ -21,7 +23,7 @@ app.get('/products', async (req, res) => {
     
 });
 
-
+//GET /products/5 - grazina viena konkretu produkta pagal id
 app.get('/products/:id', async (req, res) => {
     try{
         const id = req.params.id; //id imamas is params
@@ -33,12 +35,14 @@ app.get('/products/:id', async (req, res) => {
     }
 });
 
+
+//POST /products - ideda nauja produkta
 app.post('/products', async (req, res) => {
     try{
 
         const {title, description, price} = req.body;
         const results = await pool.query(
-            `insert into products (title, description, price) values ('${title}', '${description}', '${price}') returning*`);
+            `insert into products (title, description, price) values ('${title}', '${description}', ${price}) returning*`);
         res.status(201).json(results.rows[0]);
     }
     catch(err){
@@ -46,13 +50,14 @@ app.post('/products', async (req, res) => {
     }
 });
 
+//PUT arba PATCH /products/5 - redaguoja (atnaujina, papildo) nurodyta produkta pagal id
 app.put('/products/:id', async (req, res) => {
     try{
 
         const { id } = req.params; //ID iš URL
         const {title, description, price} = req.body;
         const results = await pool.query(
-            `update products set title = '${title}', description = '${description}', price = '${price}' where id = '${id}' returning *`);
+            `update products set title = '${title}', description = '${description}', price = ${price} where id = '${id}' returning *`);
         if (results.rowCount === 0){
             return res.status(404).json({error: 'Product not found'});
         }
@@ -63,6 +68,7 @@ app.put('/products/:id', async (req, res) => {
     }
 });
 
+//DELETE - istrina pasirinkta produkta pagal id
 app.delete('/products/:id', async (req, res) => {
     try {
         const { id } = req.params; //ID iš URL
@@ -88,7 +94,7 @@ app.delete('/products/:id', async (req, res) => {
 
 
 
-//USERS---------------------------------------------------------------------------------------
+//USERS ROUTES---------------------------------------------------------------------------------------
 //grazina visus vartotojus
 app.get('/users', async (req, res) => {
     try{
@@ -169,6 +175,33 @@ app.delete('/users/:id', async (req, res) => {
 
 
 });
+
+
+/*
+Nesaugus API, su siais routes:
+GET /products - atvaizduoti visus produktus
+GET /products/1 - atvaizduoti konkretų produktą
+POST /products - sukurti naują produktą
+PUT /products/:id - redaguoti produktą
+DELETE /products/:id - ištrinti produktą
+
+
+GET /users = grazina visus vartotojus
+...
+
+
+API su 10 endpoint
+
+Testuojame:
+GET /products - atvaizduoti visus produktus:
+Testavimo žingsniai:
+1. Kreiptis i /products GET
+2. Patikrinti ar yra tinkamas response. Status kodo patikra.
+3. Patikrinti response laika.
+4. Patikrinti ar ne tuscias ir ar nera error zinute.
+
+
+*/
 
 
 
