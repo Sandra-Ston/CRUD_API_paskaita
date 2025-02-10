@@ -27,8 +27,8 @@ app.get('/products', async (req, res) => {
 app.get('/products/:id', async (req, res) => {
     try{
         const id = req.params.id; //id imamas is params
-        const results = await pool.query(`select * from products where id=$1`, [id]);
-        res.status(200).json(results.rows);
+        const results = await pool.query(`select * from products where id=${id}`);
+        res.status(200).json(results.rows [0]);
     }
     catch(err){
         res.status(400).json({error: 'error'});
