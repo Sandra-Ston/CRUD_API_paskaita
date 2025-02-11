@@ -55,6 +55,7 @@ describe ('CRUD_API', () => {
                     expect(response.body).to.have.property('title', 'nauja prekė');
                     expect(response.body).to.have.property('description', 'naujas aprašymas');
                     expect(response.body).to.have.property('price', 4.20);
+                    cy.log(response.body);
                 })
         });
 
@@ -66,19 +67,22 @@ describe ('CRUD_API', () => {
             }).then((response) => {
                 expect(response.status).to.be.eq(200);
                 expect(response.duration).to.be.below(1000);
-                expect(response.body).to.have.property('id');
+                expect(response.body).to.have.property('id', 7);
                 expect(response.body).to.have.property('title', 'atnaujinta prekė');
                 expect(response.body).to.have.property('description', 'atnaujintas aprašymas');
                 expect(response.body).to.have.property('price', 420.42);
+                cy.log(response.body);
 
             })
         });
         
         it('/products delete bendras testas', () =>{
-            cy.request('DELETE', "localhost:3000/products/10").then((response) => {
+            cy.request('DELETE', "localhost:3000/products/17").then((response) => {
                 expect(response.status).to.be.eq(200);
                 expect(response.duration).to.be.below(1000);
-                expect(response.body).to.have.property('message');
+
+                //du testai viename: ar yra pranešimas ir ar žinutė atitinka norima turėti zinute (ji žinoma iš dokumentacijos)
+                expect(response.body).to.have.property('message', 'Elementas sėkmingai ištrintas');
             })
             
         });
