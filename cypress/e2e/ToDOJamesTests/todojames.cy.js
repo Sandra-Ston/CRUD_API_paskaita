@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 //svetainės atidarymas
 //cy.visit()
 
@@ -23,6 +25,7 @@ it('Create new to do', () => {
 
     //tikrinama ar susikure uzduotis
     cy.get('ul.todo-list li');
+
 
     //tikrinama ar sukurta uzduotis turi konkretu parasyta varianta - KLAIDA NESUTIKRINA KONKRETAUS TEKSTO
     cy.contains('ul.todo-list li', '1 užduotis');
